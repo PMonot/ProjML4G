@@ -32,7 +32,7 @@ def creation_graph(N):
             # Remove the possibility of self-loops
             possible_targets = possible_targets - {node}
 
-            targets = random.sample(possible_targets, number_of_links)
+            targets = random.sample(sorted(possible_targets), number_of_links)
 
             # Add edges with weights
             for target, weight in zip(targets, outgoing_weights_1):
