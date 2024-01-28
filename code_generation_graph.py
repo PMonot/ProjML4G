@@ -11,9 +11,10 @@ def creation_graph(N):
     # Add 20 nodes with status and color
     for i in range(1, N):
         status = random.choice([0, 1, 2])
-        value = random.uniform(0, 1)
+        opinion = random.uniform(0, 1)
+        alpha = random.uniform(0,1) if status == 2 else 0 
         color = 'red' if status == 0 else 'green' if status == 1 else 'blue'
-        G.add_node(i, status=status, color=color, value=value)
+        G.add_node(i, status=status, color=color, opinion=opinion, alpha = alpha)
 
     # Randomly assign weights to the edges such that the sum of weights going to each node is 1
 
@@ -55,11 +56,10 @@ def show_graph(G):
     node_colors = [G.nodes[node]['color'] for node in G.nodes()]
     edge_labels = {(i, j): f"{G[i][j]['weight']:.2f}" for i, j in G.edges()}
     nx.draw(G, pos, with_labels=True, node_size=100, node_color=node_colors, font_color='white', font_size=8, edge_color='gray', width=0.5, alpha=0.7)
+    lbda = 0.25 # Ajust this parameter to adapt the position of the text on the edges 
     for edge, label in edge_labels.items():
-        x = (pos[edge[0]][0] + pos[edge[1]][0]) / 2
-        y = (pos[edge[0]][1] + pos[edge[1]][1]) / 2
-        # Ajouter un petit décalage vertical pour éviter la superposition
-        y += 0.05 if edge[0] < edge[1] else -0.05
+        x = lbda * pos[edge[0]][0] + (1-lbda) * pos[edge[1]][0]
+        y = lbda * pos[edge[0]][1] + (1-lbda) * pos[edge[1]][1]
         plt.text(x, y, label, fontsize=8, color='black', fontweight='bold', ha='center', va='center')
 
     nx.draw_networkx_labels(G, pos, labels=group_labels, font_size=9, font_color='black', font_weight='bold')
