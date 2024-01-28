@@ -66,3 +66,20 @@ def show_graph(G):
 
     # Display the plot
     plt.show()
+def show_weight_graph(G):
+    plt.figure(figsize=(12, 8))
+    pos = nx.spring_layout(G, seed=42, k=0.3)  # Adjust the 'k' parameter for spread-out or more compact layout
+
+# Get node colors based on random values
+    node_colors = [G.nodes[node]['value'] for node in G.nodes()]
+
+# Plot nodes with color scale
+    node_collection = nx.draw_networkx_nodes(G, pos, cmap=cm.Blues, node_color=node_colors, node_size=1000, vmin=0, vmax=1)
+    nx.draw_networkx_labels(G, pos)
+    nx.draw_networkx_edges(G, pos, edge_color='gray', width=1, alpha=0.7)
+
+# Add a colorbar
+    plt.colorbar(node_collection, label='Node Values')
+
+# Display the plot
+    plt.show()
