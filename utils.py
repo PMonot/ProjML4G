@@ -38,3 +38,57 @@ def Gamma(u,M,S2):
         proj -= ((sum(proj)-M)/sum(a))*a
     return(proj)
 
+def mat_A(G):
+    """
+    Computes the matrix A as in the article
+    """
+    N = len(G.nodes()) + 1
+    A = np.zeros((N-1,N-1))
+    S0_index = 0
+    S2_index = 0
+    for i in range(1,N):
+        for j in range(1,N):
+            if i != j :
+                if G.nodes[i]['status'] == 0 :
+                    S0_index = 1
+                elif G.nodes[i]['status'] == 2 :
+                    S2_index = 1
+                else :
+                    S0_index = 0
+                    S2_index = 0
+                if G.has_edge(i,j) :
+                    A[i-1][j-1] = (1 - S0_index) * (1 - S2_index * G.nodes[i]['alpha']) * G[i][j]['weight']
+    return(A)
+
+def mat_H(G):
+    N = len(G.nodes())
+    H = np.zeros((N,1))
+    for node in G.nodes():
+        if G.nodes[node]['status'] == 0:
+            H[node-1] = G.nodes[node]['opinion']
+    return(H)
+
+def mat_WS0(G):
+    N = len(G.nodes()) + 1
+    W = np.zeros((N-1,1))
+    S0_index = 0
+    H = mat_H(G)
+    for i in range(1,N):
+        if G.nodes[i]['status'] == 0 :
+            S0_index = 1
+        else :
+            S0_index = 0
+        W[i-1] = S0_index * H[i-1]
+    return(W)
+
+def mat_WS2(G):
+    N = len(G.nodes()) + 1
+    W = np.zeros((N-1,1))
+    S2_index = 0
+    for i in range(1,N):
+        if G.nodes[i]['status'] == 2 :
+            S2_index = 1
+        else :
+            S2_index = 0
+        W[i-1] = S2_index * G.nodes[i]['alpha']
+    return(W)
